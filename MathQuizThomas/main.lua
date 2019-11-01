@@ -100,8 +100,8 @@ end
 
 function AskQuestion()
 	-- generate 2 random numbers between a max. and a min. number
-	randomNumber1 = math.random(1, 10)
-	randomNumber2 = math.random(1, 10)
+	randomNumber1 = math.random(1, 20)
+	randomNumber2 = math.random(1, 20)
 
 	-- chooses a random operator
 	randomOperator = math.random(1, 3)
@@ -251,10 +251,6 @@ loseObject.isVisible = false
 pointsObject = display.newText("points = " .. points, display.contentWidth/4.5, display.contentHeight/4, nil, 50 )
 pointsObject:setTextColor(255/255, 20/255, 0/255)
 
--- displays "you win" and sets the colour 
-winObject = display.newText( "You Win", display.contentWidth/2, display.contentHeight/2, nil, 200 )
-winObject:setTextColor(0/255, 255/255, 5/255)
-winObject.isVisible = false
 
 -- create the text and make it invisible
 correctObject = display.newText( "Correct", display.contentWidth/2, display.contentHeight*2/3, nil, 50 )
