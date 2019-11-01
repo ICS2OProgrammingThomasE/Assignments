@@ -20,10 +20,14 @@ local correctObject
 local numericField
 local randomNumber1
 local randomNumber2
+local randomNumber3
+local ramdomNumber4
+local divQuestion
+local srQuestion
 local tempRandomNumber3
 local userAnswer
 local correctAnswer
-local incorrectAnswer
+local incorrectAnswer 
 local points = 0
 local lives = 4
 local loseObject
@@ -104,7 +108,8 @@ function AskQuestion()
 	randomNumber2 = math.random(1, 20)
 
 	-- chooses a random operator
-	randomOperator = math.random(1, 3)
+	randomOperator = math.random(1, 5)
+	
 
 	if (randomOperator == 1) then
 		correctAnswer = randomNumber1 + randomNumber2
@@ -131,6 +136,18 @@ function AskQuestion()
 
 		--create question in text object
 		questionObject.text = randomNumber1 .. " * " .. randomNumber2 .. " = "
+
+	elseif (randomOperator == 4) then
+		randomNumber3 = math.random(1, 10)
+		ramdomNumber4 = math.random(1, 10)
+		divQuestion = randomNumber3 * ramdomNumber4
+		correctAnswer = divQuestion / randomNumber3
+		questionObject.text = divQuestion .. " ÷ " .. randomNumber3 .." = "
+
+	elseif (randomOperator == 5) then
+		srQuestion = randomNumber1 * randomNumber1
+		correctAnswer = randomNumber1
+		questionObject.text = " √ " .. srQuestion  .." = "
 	end	
 end
 
@@ -183,7 +200,6 @@ local function numericFieldListener( event )
 				bkg.isVisible = false
 				--display you win
 				winObject.isVisible = true
-				local winBkg = display.newImageRect("Images/winBkg.jpg", display.contentWidth, display.contentHeight)
 				winBkg.x = display.contentCenterX
 				winBkg.y = display.contentCenterY
 			end
