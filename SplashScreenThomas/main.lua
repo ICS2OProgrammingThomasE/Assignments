@@ -12,28 +12,39 @@ display.setStatusBar(display.HiddenStatusBar)
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 local logo = display.newImageRect("Images/Logo.png", 250, 250)
 
-logo.x = 50
-logo.y = display.contentHeight
+logo.x = display.contentCenterX
+logo.y = display.contentCenterY
 logo.alpha = 1
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- GLOBAL VARIABLES -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
--- set the scroll speed
-scrollSpeed = 3
 
 -----------------------------
 -- Functions
 ---------------
 
--- Desciption: This function adds the scroll speed to the x-value and y-value of logo
-local function MoveLogo(event)
-	-- add the scroll speed to the x-value of the logo
-	logo.x = logo.x + scrollSpeed
+-- Desciption: This function shrinks logo until it reaches 200 in size
+function ShrinkLogo(event)
+	if (logo.height > 200) then
+		logo.height = logo.height - 1
+		logo.width = logo.width - 1
+		if (logo.height == 200 ) then 
+			Runtime:addEventListener("enterFrame", GrowLogo)
+		end
+	end
+end
 
-	-- add the scroll speed to the y-value of the logo
-	logo.y = logo.y - scrollSpeed
+-- Desciption: This function shrinks logo until it reaches 200 in size
+function GrowLogo(event)
+	if (logo.height < 250) then
+		logo.height = logo.height + 1
+		logo.width = logo.width + 1
+		if (logo.height == 250 ) then
+			Runtime:addEventListener("enterFrame", ShrinkLogo)
+		end
+	end
 end
 
 -- MoveRocketShip will be called over and over again
-Runtime:addEventListener("enterFrame", MoveLogo)
+Runtime:addEventListener("enterFrame", ShrinkLogo)
