@@ -1,6 +1,6 @@
--- Title: 
+-- Title: credits screen 
 -- Name: Thomas
--- this is the main menu screen for the game for the corpus kids
+-- this is the credits screen for the game for the corpus kids
 
 ----------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------
@@ -11,44 +11,39 @@
 local composer = require( "composer" )
 
 -----------------------------------------------------------------------------------------
+
 -- Use Widget Library
 local widget = require( "widget" )
 
 -----------------------------------------------------------------------------------------
 
 -- Naming Scene
-sceneName = "main_menu"
+sceneName = "credits_screen"
 
 -----------------------------------------------------------------------------------------
 
 -- Creating Scene Object
 local scene = composer.newScene( sceneName )
 
-----------------------------------------------------------------------------------------------
--- LOCAL VARIABLES--------------------------------------------------------------------------------
---------------------------------------------------------------------------------------------------
-local playButton
-local instructionsButton
-local creditsButton
+-- hide the status bar
+display.setStatusBar(display.HiddenStatusBar)
 
------------------------------------------------------------------------------------------
--- FUNCTIONS
------------------------------------------------------------------------------------------
 
--- The function that will go to the level 1 screen
-local function gotolevel1screen()
-    composer.gotoScene( "level1_screen" )
-end
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- LOCAl VARIABLES -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+local backButton
 
--- The function that will go to the credits screen
-local function gotocreditscreen()
-    composer.gotoScene( "credits_screen" )
-end
+
+-----------------------------
+-- Functions
+---------------
 
 -- The function that will go to the main menu 
-local function gotoinstructionscreen()
-    composer.gotoScene( "instructions_screen" )
+local function gotoMainMenu()
+    composer.gotoScene( "main_menu" )
 end
+
 -----------------------------------------------------------------------------------------
 -- GLOBAL SCENE FUNCTIONS
 -----------------------------------------------------------------------------------------
@@ -61,77 +56,38 @@ function scene:create( event )
 
     -- sets the background 
     -- Insert the background image
-    bkg_image = display.newImageRect("Images/MainMenuThomas.png", display.contentWidth, display.contentHeight)
+    bkg_image = display.newImageRect("Images/CreditsScreenThomas.png", display.contentWidth, display.contentHeight)
     bkg_image.x = display.contentCenterX
     bkg_image.y = display.contentCenterY
     bkg_image.width = display.contentWidth
     bkg_image.height = display.contentHeight
-
-    -- Insert background image into the scene group in order to ONLY be associated with this scene
-    sceneGroup:insert( bkg_image )    
-
+	
     -- Send the background image to the back layer so all other objects can be on top
     bkg_image:toBack()
-    -----------------------------------------------------------------------------------------
-    -- BUTTON WIDGETS
-    -----------------------------------------------------------------------------------------   
 
-    -- Creating Play Button
-    playButton = widget.newButton( 
-        {   
-			-- Set its position and its size
-			x = display.contentWidth/2 - 25,
-			y = display.contentHeight/2 - 25,
-			width = 200,
-            height = 200,
-			
-			-- Insert the images here 
-			defaultFile = "Images/PlayButtonUnpressedThomas.png",
-			overFile = "Images/PlayButtonPressedThomas.png",
-
-			-- When the button is released, call the Level1 screen transition function
-			onRelease = gotolevel1screen          
-		} )
-
-    -- Creating Credits Button
-    creditsButton = widget.newButton( 
+	-- Insert objects into the scene group in order to ONLY be associated with this scene
+	-- Creating Back Button
+    backButton = widget.newButton( 
         {
             -- Set its position on the screen relative to the screen size
-            x = 300,
-            y = 650,
+            x = 125,
+            y = 75,
 			width = 200,
             height = 100,
             -- Insert the images here
-            defaultFile = "Images/CreditsButtonUnpressedThomas.png",
-            overFile = "Images/CreditsButtonPressedThomas.png",
+            defaultFile = "Images/BackButtonUnpressedThomas.png",
+            overFile = "Images/BackButtonPressedThomas.png",
 
             -- When the button is released, call the Credits transition function
-            onRelease = gotocreditscreen
+            onRelease = gotoMainMenu
         } ) 
-	
-	-- Creating instructions Button
-    instructionsButton = widget.newButton( 
-        {   
-			-- Set its position on the screen relative to the screen size
-            x = 700,
-            y = 650,
-			width = 200,
-            height = 100,
 
-
-			-- Insert the images here 
-			defaultFile = "Images/InstructionsButtonUnpressedThomas.png",
-			overFile = "Images/InstructionsButtonPressedThomas.png",
-
-			-- When the button is released, call the Level1 screen transition function
-			onRelease = gotoinstructionscreen          
-		} )
-	--------------------------------------------------------------------------------------------------
-    
     -- Associating button widgets with this scene
-    sceneGroup:insert( playButton )
-    sceneGroup:insert( creditsButton )
-    sceneGroup:insert( instructionsButton )
+    sceneGroup:insert( backButton )    
+    -- Associating button widgets with this scene
+    sceneGroup:insert( bkg_image )
+    -- Send the background image to the back layer so all other objects can be on top
+    bkg_image:toBack()
 end -- function scene:create( event )
 
 --------------------------------------------------------------------------------------------
@@ -154,8 +110,7 @@ function scene:show( event )
     -----------------------------------------------------------------------------------------
 
     elseif ( phase == "did" ) then
-
-		--
+    	--
     end
 
 end --function scene:show( event )
@@ -180,8 +135,7 @@ function scene:hide( event )
 
     -- Called immediately after scene goes off screen.
     elseif ( phase == "did" ) then
-    	--
-
+        --
     end
 
 end --function scene:hide( event )

@@ -32,6 +32,8 @@ display.setStatusBar(display.HiddenStatusBar)
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- LOCAl VARIABLES -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+local backButton
+
 
 -----------------------------
 -- Functions
@@ -55,8 +57,28 @@ function scene:create( event )
     -- sets the colour of the background
 	display.setDefault("background", 255/255, 0/255, 177/255 )
 	
+	-- Send the background image to the back layer so all other objects can be on top
+    bkg_image:toBack()
+    
 	-- Insert objects into the scene group in order to ONLY be associated with this scene
+	-- Creating Back Button
+    backButton = widget.newButton( 
+        {
+            -- Set its position on the screen relative to the screen size
+            x = 125,
+            y = 75,
+			width = 200,
+            height = 100,
+            -- Insert the images here
+            defaultFile = "Images/BackButtonUnpressedThomas.png",
+            overFile = "Images/BackButtonPressedThomas.png",
 
+            -- When the button is released, call the Credits transition function
+            onRelease = gotoMainMenu
+        } ) 
+
+    -- Associating button widgets with this scene
+   	sceneGroup:insert( backButton )
 end -- function scene:create( event )
 
 --------------------------------------------------------------------------------------------
