@@ -41,7 +41,7 @@ local backButton
 
 -- The function that will go to the main menu 
 local function gotoMainMenu()
-    composer.gotoScene( "main_menu" )
+    composer.gotoScene( "main_menu",transitionOptions )
 end
 
 -----------------------------------------------------------------------------------------
@@ -70,8 +70,8 @@ function scene:create( event )
 			width = 200,
             height = 100,
             -- Insert the images here
-            defaultFile = "Images/BackButtonUnpressedThomas.png",
-            overFile = "Images/BackButtonPressedThomas.png",
+            defaultFile = "Images/BackButtonUnpressedThomas@2x.png",
+            overFile = "Images/BackButtonPressedThomas@2x.png",
 
             -- When the button is released, call the Credits transition function
             onRelease = gotoMainMenu
@@ -97,7 +97,7 @@ function scene:show( event )
 
     -- Called when the scene is still off screen (but is about to come on screen).
     if ( phase == "will" ) then
-       
+
     -----------------------------------------------------------------------------------------
 
     elseif ( phase == "did" ) then

@@ -24,12 +24,20 @@ sceneName = "main_menu"
 -- Creating Scene Object
 local scene = composer.newScene( sceneName )
 
+--
+----------------------------------------------------------------------------------------------
+-- LOCAL VARIABLES--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------
+soundOn = true
+
 ----------------------------------------------------------------------------------------------
 -- LOCAL VARIABLES--------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------
 local playButton
 local instructionsButton
 local creditsButton
+local muteButton
+local unmuteButton
 
 -----------------------------------------------------------------------------------------
 -- FUNCTIONS
@@ -49,6 +57,33 @@ end
 local function gotoinstructionscreen()
     composer.gotoScene( "instructions_screen" )
 end
+
+local function Mute (touch)
+    if (touch.phase == "ended" ) then
+        -- pause the sound
+        audio.pause(bkgMusic)
+        -- set the boolean variable to be false (sound is now muted)
+        soundOn = false
+        -- hide the mute button
+        muteButton.isVisible = false
+        -- show the unmute button
+        unmuteButton.isVisible = true
+    end
+end
+
+local function unMute (touch)
+    if (touch.phase == "ended" ) then
+        -- play the sound
+        audio.resume(bkgMusic)
+        -- set the boolean variable to be false (sound is now on)
+        soundOn = false
+        -- hide the mute button
+        muteButton.isVisible = true
+        -- show the unmute button
+        unmuteButton.isVisible = false
+    end
+end
+
 -----------------------------------------------------------------------------------------
 -- GLOBAL SCENE FUNCTIONS
 -----------------------------------------------------------------------------------------
@@ -61,7 +96,7 @@ function scene:create( event )
 
     -- sets the background 
     -- Insert the background image
-    bkg_image = display.newImageRect("Images/MainMenuThomas.png", display.contentWidth, display.contentHeight)
+    bkg_image = display.newImageRect("Images/MainMenuThomas@2x.png", display.contentWidth, display.contentHeight)
     bkg_image.x = display.contentCenterX
     bkg_image.y = display.contentCenterY
     bkg_image.width = display.contentWidth
@@ -72,6 +107,22 @@ function scene:create( event )
 
     -- Send the background image to the back layer so all other objects can be on top
     bkg_image:toBack()
+
+    -- creating mute button
+    muteButton = display.newImageRect("Images/muteButton.png", 200, 200)
+    muteButton.x = display.contentWidth*1.5/10
+    muteButton.y = display.contentHeight*1.3/10
+    muteButton.isVisible = true
+
+    -- creating unmute button
+    unmuteButton = display.newImageRect("Images/unmuteButton.png", 200, 200)
+    unmuteButton.x = display.contentWidth*1.5/10
+    unmuteButton.y = display.contentHeight*1.3/10
+    unmuteButton.isVisible = false
+    
+    ---------------------------------------------------------------------------------------------------
+    -- creating mute button
+    muteButton = display.newImageRect
     -----------------------------------------------------------------------------------------
     -- BUTTON WIDGETS
     -----------------------------------------------------------------------------------------   
@@ -86,8 +137,8 @@ function scene:create( event )
             height = 200,
 			
 			-- Insert the images here 
-			defaultFile = "Images/PlayButtonUnpressedThomas.png",
-			overFile = "Images/PlayButtonPressedThomas.png",
+			defaultFile = "Images/PlayButtonUnpressedThomas@2x.png",
+			overFile = "Images/PlayButtonPressedThomas@2x.png",
 
 			-- When the button is released, call the Level1 screen transition function
 			onRelease = gotolevel1screen          
@@ -102,8 +153,8 @@ function scene:create( event )
 			width = 200,
             height = 100,
             -- Insert the images here
-            defaultFile = "Images/CreditsButtonUnpressedThomas.png",
-            overFile = "Images/CreditsButtonPressedThomas.png",
+            defaultFile = "Images/CreditsButtonUnpressedThomas@2x.png",
+            overFile = "Images/CreditsButtonPressedThomas@2x.png",
 
             -- When the button is released, call the Credits transition function
             onRelease = gotocreditscreen
@@ -120,8 +171,8 @@ function scene:create( event )
 
 
 			-- Insert the images here 
-			defaultFile = "Images/InstructionsButtonUnpressedThomas.png",
-			overFile = "Images/InstructionsButtonPressedThomas.png",
+			defaultFile = "Images/InstructionsButtonUnpressedThomas@2x.png",
+			overFile = "Images/InstructionsButtonPressedThomas@2x.png",
 
 			-- When the button is released, call the Level1 screen transition function
 			onRelease = gotoinstructionscreen          
@@ -154,8 +205,9 @@ function scene:show( event )
     -----------------------------------------------------------------------------------------
 
     elseif ( phase == "did" ) then
-
-		--
+        bkgMusicChannel = audio.play(bkgMusic, {loops = -1})
+        muteButton:addEventListener("touch", Mute)
+        unmuteButton:addEventListener("touch", unute)
     end
 
 end --function scene:show( event )
@@ -165,7 +217,7 @@ end --function scene:show( event )
 -- The function called when the scene is issued to leave the screen
 function scene:hide( event )
 
-    -- Creating a group that associates objects with the scene
+    -- Creating  a group that associates objects with the scene
     local sceneGroup = self.view
     local phase = event.phase
 

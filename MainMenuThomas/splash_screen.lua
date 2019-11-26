@@ -91,8 +91,8 @@ function scene:create( event )
     -- sets the colour of the background
 	display.setDefault("background", 255/255, 255/255, 255/255 )
 	
-	-- creates logo and sets its position
-	logo = display.newImageRect("Images/Logo.png", 250, 250)
+    -- creates logo and sets its position
+    logo = display.newImageRect("Images/Logo@2x.png", 250, 250)
 	logo.x = display.contentCenterX
 	logo.y = display.contentCenterY
 	logo.alpha = 1

@@ -56,7 +56,7 @@ function scene:create( event )
 
     -- sets the background 
     -- Insert the background image
-    bkg_image = display.newImageRect("Images/CreditsScreenThomas.png", display.contentWidth, display.contentHeight)
+    bkg_image = display.newImageRect("Images/CreditsScreenThomas@2x.png", display.contentWidth, display.contentHeight)
     bkg_image.x = display.contentCenterX
     bkg_image.y = display.contentCenterY
     bkg_image.width = display.contentWidth
@@ -75,8 +75,8 @@ function scene:create( event )
 			width = 200,
             height = 100,
             -- Insert the images here
-            defaultFile = "Images/BackButtonUnpressedThomas.png",
-            overFile = "Images/BackButtonPressedThomas.png",
+            defaultFile = "Images/BackButtonUnpressedThomas@2x.png",
+            overFile = "Images/BackButtonPressedThomas@2x.png",
 
             -- When the button is released, call the Credits transition function
             onRelease = gotoMainMenu
@@ -119,7 +119,6 @@ end --function scene:show( event )
 
 -- The function called when the scene is issued to leave the screen
 function scene:hide( event )
-
     -- Creating a group that associates objects with the scene
     local sceneGroup = self.view
     local phase = event.phase
