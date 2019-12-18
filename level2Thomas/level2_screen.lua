@@ -104,6 +104,9 @@ local function gotoYouLose()
     composer.gotoScene( "you_lose")
 end
 
+local function gotoYouWin()
+    composer.gotoScene( "you_win")
+end
 
 local function DisplayQuestion()
     local randomNumber
@@ -209,14 +212,15 @@ local function RestartLevel1()
     PositionAnswers()    
 end
 
--- Function to Check User Input
-local function CheckUserAnswerInput()
-          
-    timer.performWithDelay(1600, RestartLevel1) 
+local function CorrectUserInput()
+    points = points + 1
+    if (points == 3) then
+        go
 end
 
 local function IncorrectUserInput()
     lives = lives - 1 
+
     if (lives == 2) then 
         heart1.isVisible = false
         timer.performWithDelay(1500, RestartLevel1) 
