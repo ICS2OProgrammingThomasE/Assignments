@@ -31,6 +31,8 @@ display.setStatusBar(display.HiddenStatusBar)
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- LOCAl VARIABLES -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+local bkg
+
 local backButton
 
 local lives = 3
@@ -46,6 +48,8 @@ local question
 local correctAnswer
 local alternateAnswer1
 local alternateAnswer2
+local correctText
+local incorrectText
 
 local X1 = 500
 local X2 = 700
@@ -95,9 +99,6 @@ local alreadyClickedAnswer = false
 ----------------------------------------------------------------
 
 -- The function that will go to the main menu 
-local function gotoMainMenu()
-    composer.gotoScene( "main_menu",transitionOptions )
-end
 
 -- The function that will go to the main menu 
 local function gotoYouLose()
@@ -209,18 +210,24 @@ end
 -- Function to Restart Level 1
 local function RestartLevel1()
     DisplayQuestion()
-    PositionAnswers()    
+    PositionAnswers()
+    correctText.isVisible = false    
+    incorrectText.isVisible = false
 end
 
 local function CorrectUserInput()
     points = points + 1
+    correctText.isVisible = true
     if (points == 3) then
-        go
+        gotoYouWin()
+    else 
+        timer.performWithDelay(1500, RestartLevel1) 
+    end
 end
 
 local function IncorrectUserInput()
     lives = lives - 1 
-
+    incorrectText.isVisible = true
     if (lives == 2) then 
         heart1.isVisible = false
         timer.performWithDelay(1500, RestartLevel1) 
@@ -230,7 +237,6 @@ local function IncorrectUserInput()
     elseif(lives == 0) then
         heart3.isVisible = false
         gotoYouLose()
-
     end
 end
 
@@ -266,7 +272,7 @@ local function TouchListenerCorrectAnswer(touch)
                 correctAnswer.y = userAnswerBoxPlaceholder.y
 
                 -- call the function to check if the user's input is correct or not
-                CheckUserAnswerInput()
+                CorrectUserInput()
 
             --else make box go back to where it was
             else
@@ -288,8 +294,8 @@ local function TouchListenerAlternateAnswer1(touch)
             
         --drag the answer to follow the mouse
         elseif (touch.phase == "moved") then
-            alternateAnswerBox1.x = touch.x
-            alternateAnswerBox1.y = touch.y
+            alternateAnswer1.x = touch.x
+            alternateAnswer1.y = touch.y
 
         elseif (touch.phase == "ended") then
             alternateAnswer1AlreadyTouched = false
@@ -300,24 +306,24 @@ local function TouchListenerAlternateAnswer1(touch)
                 ((userAnswerBoxPlaceholder.y - userAnswerBoxPlaceholder.height/2) < alternateAnswerBox1.y ) and 
                 ((userAnswerBoxPlaceholder.y + userAnswerBoxPlaceholder.height/2) > alternateAnswerBox1.y ) ) then
 
-                alternateAnswerBox1.x = userAnswerBoxPlaceholder.x
-                alternateAnswerBox1.y = userAnswerBoxPlaceholder.y
+                alternateAnswer1.x = userAnswerBoxPlaceholder.x
+                alternateAnswer1.y = userAnswerBoxPlaceholder.y
 
                 userAnswer = alternateAnswer1
 
                 -- call the function to check if the user's input is correct or not
-                CheckUserAnswerInput()
+                CorrectUserInput()
 
             --else make box go back to where it was
             else
-                alternateAnswerBox1.x = alternateAnswerBox1PreviousX
-                alternateAnswerBox1.y = alternateAnswerBox1PreviousY
+                alternateAnswer1.x = alternateAnswer1PreviousX
+                alternateAnswer1.y = alternateAnswer1PreviousY
             end
         end
     end
 end 
 
-local function TouchListenerAlternateAnswer2(touch)
+local function TouchListenerAlternateAnswer1(touch)
     --only work if none of the other boxes have been touched
     if (correctAnswerAlreadyTouched == false) and 
         (alternateAnswer2AlreadyTouched == false) then
@@ -328,36 +334,36 @@ local function TouchListenerAlternateAnswer2(touch)
             
         --drag the answer to follow the mouse
         elseif (touch.phase == "moved") then
-            alternateAnswerBox1.x = touch.x
-            alternateAnswerBox1.y = touch.y
+            alternateAnswer1.x = touch.x
+            alternateAnswer1.y = touch.y
 
         elseif (touch.phase == "ended") then
             alternateAnswer1AlreadyTouched = false
 
             -- if the box is in the userAnswerBox Placeholder  go to center of placeholder
-            if (((userAnswerBoxPlaceholder.x - userAnswerBoxPlaceholder.width/2) < alternateAnswerBox1.x ) and 
-                ((userAnswerBoxPlaceholder.x + userAnswerBoxPlaceholder.width/2) > alternateAnswerBox1.x ) and 
-                ((userAnswerBoxPlaceholder.y - userAnswerBoxPlaceholder.height/2) < alternateAnswerBox1.y ) and 
-                ((userAnswerBoxPlaceholder.y + userAnswerBoxPlaceholder.height/2) > alternateAnswerBox1.y ) ) then
+            if (((userAnswerBoxPlaceholder.x - userAnswerBoxPlaceholder.width/2) < alternateAnswer1.x ) and 
+                ((userAnswerBoxPlaceholder.x + userAnswerBoxPlaceholder.width/2) > alternateAnswer1.x ) and 
+                ((userAnswerBoxPlaceholder.y - userAnswerBoxPlaceholder.height/2) < alternateAnswer1.y ) and 
+                ((userAnswerBoxPlaceholder.y + userAnswerBoxPlaceholder.height/2) > alternateAnswer1.y ) ) then
 
-                alternateAnswerBox1.x = userAnswerBoxPlaceholder.x
-                alternateAnswerBox1.y = userAnswerBoxPlaceholder.y
+                alternateAnswer1.x = userAnswerBoxPlaceholder.x
+                alternateAnswer1.y = userAnswerBoxPlaceholder.y
 
                 userAnswer = alternateAnswer1
 
                 -- call the function to check if the user's input is correct or not
-                CheckUserAnswerInput()
+                IncorrectUserInput()
 
             --else make box go back to where it was
             else
-                alternateAnswerBox1.x = alternateAnswerBox1PreviousX
-                alternateAnswerBox1.y = alternateAnswerBox1PreviousY
+                alternateAnswer1.x = alternateAnswer1PreviousX
+                alternateAnswer1.y = alternateAnswer1PreviousY
             end
         end
     end
-end 
+end
 
-local function TouchListenerAnswerBox2(touch)
+local function TouchListenerAlternateAnswer2(touch)
     --only work if none of the other boxes have been touched
     if (correctAnswerAlreadyTouched == false) and 
         (alternateAnswer1AlreadyTouched == false) then
@@ -366,35 +372,36 @@ local function TouchListenerAnswerBox2(touch)
             --let other boxes know it has been clicked
             alternateAnswer2AlreadyTouched = true
             
+        --drag the answer to follow the mouse
         elseif (touch.phase == "moved") then
-            --dragging function
-            alternateAnswerBox2.x = touch.x
-            alternateAnswerBox2.y = touch.y
+            alternateAnswer2.x = touch.x
+            alternateAnswer2.y = touch.y
 
         elseif (touch.phase == "ended") then
             alternateAnswer2AlreadyTouched = false
 
             -- if the box is in the userAnswerBox Placeholder  go to center of placeholder
-            if (((userAnswerBoxPlaceholder.x - userAnswerBoxPlaceholder.width/2) < alternateAnswerBox2.x ) and 
-                ((userAnswerBoxPlaceholder.x + userAnswerBoxPlaceholder.width/2) > alternateAnswerBox2.x ) and 
-                ((userAnswerBoxPlaceholder.y - userAnswerBoxPlaceholder.height/2) < alternateAnswerBox2.y ) and 
-                ((userAnswerBoxPlaceholder.y + userAnswerBoxPlaceholder.height/2) > alternateAnswerBox2.y ) ) then
+            if (((userAnswerBoxPlaceholder.x - userAnswerBoxPlaceholder.width/2) < alternateAnswer2.x ) and 
+                ((userAnswerBoxPlaceholder.x + userAnswerBoxPlaceholder.width/2) > alternateAnswer2.x ) and 
+                ((userAnswerBoxPlaceholder.y - userAnswerBoxPlaceholder.height/2) < alternateAnswer2.y ) and 
+                ((userAnswerBoxPlaceholder.y + userAnswerBoxPlaceholder.height/2) > alternateAnswer2.y ) ) then
 
-                alternateAnswerBox2.x = userAnswerBoxPlaceholder.x
-                alternateAnswerBox2.y = userAnswerBoxPlaceholder.y
+                alternateAnswer2.x = userAnswerBoxPlaceholder.x
+                alternateAnswer2.y = userAnswerBoxPlaceholder.y
+
                 userAnswer = alternateAnswer2
 
                 -- call the function to check if the user's input is correct or not
-                CheckUserAnswerInput()
+                IncorrectUserInput()
 
             --else make box go back to where it was
             else
-                alternateAnswerBox2.x = alternateAnswerBox2PreviousX
-                alternateAnswerBox2.y = alternateAnswerBox2PreviousY
+                alternateAnswer2.x = alternateAnswer2PreviousX
+                alternateAnswer2.y = alternateAnswer2PreviousY
             end
         end
     end
-end 
+end
 
 -- Function that Adds Listeners to each answer box
 local function AddTouchEventListeners()
@@ -419,9 +426,16 @@ function scene:create( event )
     -- Creating a group that associates objects with the scene
     local sceneGroup = self.view
 
-    -- sets the colour of the background
-	display.setDefault("background", 51/255, 153/255, 255/255 )
 
+	-- Display background
+    bkg = display.newImage("Images/lvl2Screen@2x.png")
+    bkg.x = display.contentCenterX
+    bkg.y = display.contentCenterY
+    bkg.width = display.contentWidth
+    bkg.height = display.contentHeight
+
+    -- Send the background image to the back layer so all other objects can be on top
+    bkg:toBack()
     
     -- creating the syringe
     syringe = display.newImageRect("Images/syringe@2x.png", 100, 200)
@@ -470,7 +484,16 @@ function scene:create( event )
     userAnswerBoxPlaceholder.x = 700
     userAnswerBoxPlaceholder.y = 450
 
+    correctText = display.newText( "Correct!", 700, 350, nil, 35 )
+    correctText:setTextColor(0,240,0) -- sets text to green
+    correctText.isVisible = false
+
+    incorrectText = display.newText( "Wrong!", 700, 350, nil, 35 )
+    incorrectText:setTextColor(255,0,0) -- sets text to red
+    incorrectText.isVisible = false
+
     -- Associating button widgets with this scene
+    sceneGroup:insert( bkg )
     sceneGroup:insert( syringe )
     sceneGroup:insert( heart3 )
     sceneGroup:insert( heart2 )
@@ -480,6 +503,8 @@ function scene:create( event )
     sceneGroup:insert( correctAnswer )
     sceneGroup:insert( alternateAnswer1 )
     sceneGroup:insert( alternateAnswer2 )
+    sceneGroup:insert( correctText )
+    sceneGroup:insert( incorrectText )
 end -- function scene:create( event )
 
 --------------------------------------------------------------------------------------------

@@ -31,11 +31,15 @@ local scene = composer.newScene( sceneName )
 
 -- local variables for the scene
 local bkg
+local MainMenuButton
 
 -----------------------------------------------------------------------------------------
 -- LOCAL FUNCTIONS
 -----------------------------------------------------------------------------------------
 
+local function gotoMainMenu()
+    composer.gotoScene( "main_menu")
+end
 -----------------------------------------------------------------------------------------
 -- GLOBAL SCENE FUNCTIONS
 -----------------------------------------------------------------------------------------
@@ -53,10 +57,28 @@ function scene:create( event )
     bkg.y = display.contentCenterY
     bkg.width = display.contentWidth
     bkg.height = display.contentHeight
+
+    -- Creating Credits Button
+    MainMenuButton = widget.newButton( 
+        {
+            -- Set its position on the screen relative to the screen size
+            x = display.contentWidth/2,
+            y = 700,
+            width = 200,
+            height = 100,
+            -- Insert the images here
+            defaultFile = "Images/MainMenuButtonUnpressedThomas@2x.png",
+            overFile = "Images/MainMenuButtonPressedThomas@2x.png",
+
+            -- When the button is released, call the Credits transition function
+            onRelease = gotoMainMenu
+
+        } ) 
     -----------------------------------------------------------------------------------------     
 
     -- Associating display objects with this scene 
     sceneGroup:insert( bkg )
+    sceneGroup:insert( MainMenuButton )
 end
 
 -----------------------------------------------------------------------------------------

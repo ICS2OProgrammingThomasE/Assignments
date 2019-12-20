@@ -55,7 +55,7 @@ function scene:create( event )
     bkg.width = display.contentWidth
     bkg.height = display.contentHeight
 
-        -- Creating Credits Button
+    -- Creating Credits Button
     MainMenuButton = widget.newButton( 
         {
             -- Set its position on the screen relative to the screen size
@@ -68,7 +68,7 @@ function scene:create( event )
             overFile = "Images/MainMenuButtonPressedThomas@2x.png",
 
             -- When the button is released, call the Credits transition function
-            onRelease = gotoMainMenu()
+            onRelease = gotoMainMenu
 
         } ) 
     -----------------------------------------------------------------------------------------     
