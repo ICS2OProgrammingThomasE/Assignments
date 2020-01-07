@@ -52,10 +52,10 @@ local correctText
 local incorrectText
 local displayAnswerText
 
-local X1 = 200
-local X2 = 512
-local X3 = 824
-local Y1 = 600
+local X1 = display.contentWidth/2
+local Y1 = 500
+local Y2 = 550
+local Y3 = 600
 
 -- Variables containing the user answer and the actual answer
 local userAnswer
@@ -72,13 +72,13 @@ local alternateAnswerBox2
 
 -- create variables that will hold the previous x- and y-positions so that 
 -- each answer will return back to its previous position after it is moved
-local correctAnswerPreviousY = Y1
-local alternateAnswer1PreviousY = Y1
-local alternateAnswer2PreviousY = Y1 
+local correctAnswerPreviousY 
+local alternateAnswer1PreviousY
+local alternateAnswer2PreviousY
 
-local correctAnswerPreviousX
-local alternateAnswer1PreviousX
-local alternateAnswer2PreviousX
+local correctAnswerPreviousX = X1
+local alternateAnswer1PreviousX = X1
+local alternateAnswer2PreviousX = X1
 
 -- the black box where the user will drag the answer
 local userAnswerBoxPlaceholder
@@ -166,13 +166,16 @@ local function PositionAnswers()
         -- set the new y-positions of each of the answers
         correctAnswer.x = X1
         correctAnswer.y = Y1
-        displayAnswerText.x = X1
+        correctAnswerPreviousY = Y1
+        displayAnswerText.y = Y1
         --alternateAnswerBox2
-        alternateAnswer2.x = X2
-        alternateAnswer2.y = Y1
+        alternateAnswer2.x = X1
+        alternateAnswer2.y = Y2
+        alternateAnswer2PreviousY = Y2
         --alternateAnswerBox1
-        alternateAnswer1.x = X3
-        alternateAnswer1.y = Y1
+        alternateAnswer1.x = X1
+        alternateAnswer1.y = Y3
+        alternateAnswer1PreviousY = Y3
         ---------------------------------------------------------
         --remembering their positions to return the answer in case it's wrong
         alternateAnswer1PreviousX = alternateAnswer1.x
@@ -183,31 +186,36 @@ local function PositionAnswers()
     -- random position 2
     elseif (randomPosition == 2) then
 
-        correctAnswer.x = X2
-        correctAnswer.y = Y1
-        displayAnswerText.x = X2
+        correctAnswer.x = X1
+        correctAnswer.y = Y2
+        correctAnswerPreviousY = Y2
+        displayAnswerText.y = Y2
         --alternateAnswerBox2
-        alternateAnswer2.x = X3
-        alternateAnswer2.y = Y1
+        alternateAnswer2.x = X1
+        alternateAnswer2.y = Y3
+        alternateAnswer2PreviousY = Y3
         --alternateAnswerBox1
         alternateAnswer1.x = X1
         alternateAnswer1.y = Y1
+        alternateAnswer1PreviousY = Y1
         --remembering their positions to return the answer in case it's wrong
         alternateAnswer1PreviousX = alternateAnswer1.x
         alternateAnswer2PreviousX = alternateAnswer2.x
         correctAnswerPreviousX = correctAnswer.x
-
     -- random position 3
      elseif (randomPosition == 3) then
-        correctAnswer.x = X3
-        correctAnswer.y = Y1
-        displayAnswerText.x = X3
+        correctAnswer.x = X1
+        correctAnswer.y = Y3
+        correctAnswerPreviousY = Y3
+        displayAnswerText.y = Y3
         --alternateAnswerBox2
         alternateAnswer2.x = X1
         alternateAnswer2.y = Y1
+        alternateAnswer2PreviousY = Y1
         --alternateAnswerBox1
-        alternateAnswer1.x = X2
-        alternateAnswer1.y = Y1
+        alternateAnswer1.x = X1
+        alternateAnswer1.y = Y2
+        alternateAnswer1PreviousY = Y2
         --remembering their positions to return the answer in case it's wrong
         alternateAnswer1PreviousX = alternateAnswer1.x
         alternateAnswer2PreviousX = alternateAnswer2.x
@@ -215,8 +223,19 @@ local function PositionAnswers()
     end
 end
 
+local function heart1Transition()
+    heart1.y = heart1.y + 1 
+end
+
+local function heart2Transition()
+    heart2.y = heart2.y + 1 
+end
+
+local function heart3Transition()
+    heart3.y = heart3.y + 1 
+end
 -- Function to Restart Level 1
-local function RestartLevel1()
+local function RestartLevel4()
     DisplayQuestion()
     PositionAnswers()
     correctText.isVisible = false    
@@ -231,7 +250,7 @@ local function CorrectUserInput()
         gotoYouWin()
         resetScore()
     else 
-        timer.performWithDelay(1500, RestartLevel1) 
+        timer.performWithDelay(1500, RestartLevel4) 
     end
 end
 
@@ -241,10 +260,10 @@ local function IncorrectUserInput()
     displayAnswerText.isVisible = true
     if (lives == 2) then 
         heart1.isVisible = false
-        timer.performWithDelay(1500, RestartLevel1) 
+        timer.performWithDelay(1500, RestartLevel4) 
     elseif (lives == 1 ) then 
         heart2.isVisible = false
-        timer.performWithDelay(1500, RestartLevel1) 
+        timer.performWithDelay(1500, RestartLevel4) 
     elseif(lives == 0) then
         heart3.isVisible = false
         gotoYouLose()
@@ -439,7 +458,7 @@ function scene:create( event )
     local sceneGroup = self.view
 	
     -- Display background
-    bkg = display.newImage("Images/lvl2Screen@2x.png")
+    bkg = display.newImage("Images/lvl4Screen@2x.png")
     bkg.x = display.contentCenterX
     bkg.y = display.contentCenterY
     bkg.width = display.contentWidth
@@ -467,8 +486,9 @@ function scene:create( event )
 
     --the text that displays the question
     question = display.newText("" , 0, 0, nil, 30)
+    question:setTextColor(255/255, 0/255, 0/255)
     question.x = 550
-    question.y = 300
+    question.y = 200
 
     -- boolean variables stating whether or not the answer was touched
     correctAnswerAlreadyTouched = false
@@ -476,14 +496,14 @@ function scene:create( event )
     alternateAnswer2AlreadyTouched = false
 
     --the text that displays correctAnswer
-    correctAnswer = display.newText("1", X1, Y1, nil, 30)
-    
+    correctAnswer = display.newText("1", X1, Y1, nil, 27)
+    correctAnswer:setTextColor(255/255, 86/255, 1/255) -- sets text to orange
     --the text that displays alternateAnswer1
-    alternateAnswer1 = display.newText("2", X2, Y1, nil, 30)
-    
+    alternateAnswer1 = display.newText("2", X1, Y1, nil, 27)
+    alternateAnswer1:setTextColor(255/255, 86/255, 1/255) -- sets text to orange
     --the text that displays alternateAnswer2
-    alternateAnswer2 = display.newText("3", X3, Y1, nil, 30)
-    
+    alternateAnswer2 = display.newText("3", X1, Y1, nil, 27)
+    alternateAnswer2:setTextColor(255/255, 86/255, 1/255) -- sets text to orange
     -- set the x positions of each of the answer boxes
     answerboxPreviousX = display.contentWidth * 0.9
     alternateAnswerBox1PreviousX = display.contentWidth * 0.9
@@ -493,19 +513,19 @@ function scene:create( event )
     -- the black box where the user will drag the answer
     userAnswerBoxPlaceholder = display.newImageRect("Images/answerBox@2x.png",  130, 130, 0, 0)
     userAnswerBoxPlaceholder.x = 512
-    userAnswerBoxPlaceholder.y = 450
+    userAnswerBoxPlaceholder.y = 350
 
-    correctText = display.newText( "Correct!", 700, 350, nil, 35 )
-    correctText:setTextColor(0,240,0) -- sets text to green
+    correctText = display.newText( "Correct!", 700, 350, nil, 30 )
+    correctText:setTextColor(0/255,240/255,0/255) -- sets text to green
     correctText.isVisible = false
 
-    incorrectText = display.newText( "Wrong!", 700, 350, nil, 35 )
-    incorrectText:setTextColor(255,0,0) -- sets text to red
+    incorrectText = display.newText( "Wrong!", 700, 350, nil, 30 )
+    incorrectText:setTextColor(255/255,0/255,0/255) -- sets text to red
     incorrectText.isVisible = false
 
     -- X4 = the x of displayAnswerText
-    displayAnswerText = display.newText( "correct answer:", X1, 550, nil, 30 )
-    displayAnswerText:setTextColor(8,200,0) -- sets text to green
+    displayAnswerText = display.newText( "correct answer:", 300, Y1, nil, 30 )
+    displayAnswerText:setTextColor(9/255,200/255,0/255) -- sets text to green
     displayAnswerText.isVisible = false
 
     -- Associating button widgets with this scene
@@ -544,8 +564,10 @@ function scene:show( event )
     -----------------------------------------------------------------------------------------
 
     elseif ( phase == "did" ) then
+        lives = 3
+        points = 0
         audio.pause(bkgMusicChannel) 
-        RestartLevel1()
+        RestartLevel4()
         resetScore()
         AddTouchEventListeners()
 
