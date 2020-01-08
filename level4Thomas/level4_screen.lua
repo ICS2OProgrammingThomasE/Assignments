@@ -35,8 +35,9 @@ local bkg
 
 local backButton
 
-local lives
-local points
+local lives = 3
+local points = 0
+local pointsText
 
 local heart1
 local heart2
@@ -45,9 +46,11 @@ local heart3
 local syringe
 
 local question
+
 local correctAnswer
 local alternateAnswer1
 local alternateAnswer2
+
 local correctText
 local incorrectText
 local displayAnswerText
@@ -86,7 +89,6 @@ local userAnswerBoxPlaceholder
 -- sound effects
 local correctSound
 
-
 -- Boolean variable that states if user clicked the answer or not
 local alreadyClickedAnswer = false
 
@@ -102,15 +104,22 @@ local alreadyClickedAnswer = false
 -- The function that will reset the score
 local function resetScore()
     points = 0
+    print("reset Score, points = " .. points)
+    pointsText.text = "Points = " .. points
     lives = 3
+    heart1.isVisible = true
+    heart2.isVisible = true
+    heart3.isVisible = true
 end
 
 -- The function that will go to the main menu 
 local function gotoYouLose()
+    print("going to you lose")
     composer.gotoScene( "you_lose")
 end
 
 local function gotoYouWin()
+    print("going to you win")
     composer.gotoScene( "you_win")
 end
 
@@ -124,27 +133,32 @@ local function DisplayQuestion()
         question.text = "What should you wear before ride a bicycle?"
         correctAnswer.text = "Helmet"
         alternateAnswer1.text = "Hat"
-        alternateAnswer2.text = "sunglasses"
+        alternateAnswer2.text = "Sunglasses"
+
     elseif (randomNumber == 2) then
         question.text = "What should you do before you slide down a hill on a sled?"
         correctAnswer.text = "Check if anyone is in the way"
         alternateAnswer1.text = "Go without looking"
         alternateAnswer2.text = "Go down an icy part"
+
     elseif (randomNumber == 3) then
         question.text = "What should you do before you go to the beach?"
         correctAnswer.text = "Put on Sunscreen"
         alternateAnswer1.text = "Take a selfie"
         alternateAnswer2.text = "Eat some chips"
+
     elseif (randomNumber == 4) then
         question.text = "What should you do when you are playing outside?"
         correctAnswer.text = "Watch out for cars"
         alternateAnswer1.text = "Play rough games"
         alternateAnswer2.text = "Don't pay attention"
+
     elseif (randomNumber == 5) then
         question.text = "What should you do if you are dehydrated?"
         correctAnswer.text = "Drink a lot of water"
         alternateAnswer1.text = "Go swimming "
         alternateAnswer2.text = "Drink some soda"
+
     end    
 
     -- make it possible to click on the answers again
@@ -168,14 +182,17 @@ local function PositionAnswers()
         correctAnswer.y = Y1
         correctAnswerPreviousY = Y1
         displayAnswerText.y = Y1
+
         --alternateAnswerBox2
         alternateAnswer2.x = X1
         alternateAnswer2.y = Y2
         alternateAnswer2PreviousY = Y2
+
         --alternateAnswerBox1
         alternateAnswer1.x = X1
         alternateAnswer1.y = Y3
         alternateAnswer1PreviousY = Y3
+
         ---------------------------------------------------------
         --remembering their positions to return the answer in case it's wrong
         alternateAnswer1PreviousX = alternateAnswer1.x
@@ -190,32 +207,39 @@ local function PositionAnswers()
         correctAnswer.y = Y2
         correctAnswerPreviousY = Y2
         displayAnswerText.y = Y2
+
         --alternateAnswerBox2
         alternateAnswer2.x = X1
         alternateAnswer2.y = Y3
         alternateAnswer2PreviousY = Y3
+
         --alternateAnswerBox1
         alternateAnswer1.x = X1
         alternateAnswer1.y = Y1
         alternateAnswer1PreviousY = Y1
+
         --remembering their positions to return the answer in case it's wrong
         alternateAnswer1PreviousX = alternateAnswer1.x
         alternateAnswer2PreviousX = alternateAnswer2.x
         correctAnswerPreviousX = correctAnswer.x
+
     -- random position 3
      elseif (randomPosition == 3) then
         correctAnswer.x = X1
         correctAnswer.y = Y3
         correctAnswerPreviousY = Y3
         displayAnswerText.y = Y3
+
         --alternateAnswerBox2
         alternateAnswer2.x = X1
         alternateAnswer2.y = Y1
         alternateAnswer2PreviousY = Y1
+
         --alternateAnswerBox1
         alternateAnswer1.x = X1
         alternateAnswer1.y = Y2
         alternateAnswer1PreviousY = Y2
+
         --remembering their positions to return the answer in case it's wrong
         alternateAnswer1PreviousX = alternateAnswer1.x
         alternateAnswer2PreviousX = alternateAnswer2.x
@@ -245,10 +269,14 @@ end
 
 local function CorrectUserInput()
     points = points + 1
+    pointsText.text = "Points = " .. points
+    print ("CorrectUserInput: points = " .. points)
+    print ("CorrectUserInput: lives = " .. lives)
     correctText.isVisible = true
+
     if (points == 3) then
-        gotoYouWin()
-        resetScore()
+        print ("***Inside CorrectUserInput: calling gotoYouWin")
+        gotoYouWin()        
     else 
         timer.performWithDelay(1500, RestartLevel4) 
     end
@@ -258,6 +286,9 @@ local function IncorrectUserInput()
     lives = lives - 1 
     incorrectText.isVisible = true
     displayAnswerText.isVisible = true
+    print ("IncorrectUserInput: points = " .. points)
+    print ("IncorrectUserInput: lives = " .. lives)
+
     if (lives == 2) then 
         heart1.isVisible = false
         timer.performWithDelay(1500, RestartLevel4) 
@@ -267,7 +298,6 @@ local function IncorrectUserInput()
     elseif(lives == 0) then
         heart3.isVisible = false
         gotoYouLose()
-        resetScore()
     end
 end
 
@@ -292,6 +322,8 @@ local function TouchListenerCorrectAnswer(touch)
 
             correctAnswerAlreadyTouched = false
 
+            print  ("***Executing TouchListenerCorrectAnswer")
+
               -- if the number is dragged into the userAnswerBox, place it in the center of it
             if (((userAnswerBoxPlaceholder.x - userAnswerBoxPlaceholder.width/2) < correctAnswer.x ) and
                 ((userAnswerBoxPlaceholder.x + userAnswerBoxPlaceholder.width/2) > correctAnswer.x ) and 
@@ -314,45 +346,6 @@ local function TouchListenerCorrectAnswer(touch)
     end                
 end 
 
-local function TouchListenerAlternateAnswer1(touch)
-    --only work if none of the other boxes have been touched
-    if (correctAnswerAlreadyTouched == false) and 
-        (alternateAnswer2AlreadyTouched == false) then
-
-        if (touch.phase == "began") then
-            --let other boxes know it has been clicked
-            alternateAnswer1AlreadyTouched = true
-            
-        --drag the answer to follow the mouse
-        elseif (touch.phase == "moved") then
-            alternateAnswer1.x = touch.x
-            alternateAnswer1.y = touch.y
-
-        elseif (touch.phase == "ended") then
-            alternateAnswer1AlreadyTouched = false
-
-            -- if the box is in the userAnswerBox Placeholder  go to center of placeholder
-            if (((userAnswerBoxPlaceholder.x - userAnswerBoxPlaceholder.width/2) < alternateAnswerBox1.x ) and 
-                ((userAnswerBoxPlaceholder.x + userAnswerBoxPlaceholder.width/2) > alternateAnswerBox1.x ) and 
-                ((userAnswerBoxPlaceholder.y - userAnswerBoxPlaceholder.height/2) < alternateAnswerBox1.y ) and 
-                ((userAnswerBoxPlaceholder.y + userAnswerBoxPlaceholder.height/2) > alternateAnswerBox1.y ) ) then
-
-                alternateAnswer1.x = userAnswerBoxPlaceholder.x
-                alternateAnswer1.y = userAnswerBoxPlaceholder.y
-
-                userAnswer = alternateAnswer1
-
-                -- call the function to check if the user's input is correct or not
-                CorrectUserInput()
-
-            --else make box go back to where it was
-            else
-                alternateAnswer1.x = alternateAnswer1PreviousX
-                alternateAnswer1.y = alternateAnswer1PreviousY
-            end
-        end
-    end
-end 
 
 local function TouchListenerAlternateAnswer1(touch)
     --only work if none of the other boxes have been touched
@@ -370,6 +363,8 @@ local function TouchListenerAlternateAnswer1(touch)
 
         elseif (touch.phase == "ended") then
             alternateAnswer1AlreadyTouched = false
+
+            print  ("***Executing TouchListenerAlternateAnswer1")
 
             -- if the box is in the userAnswerBox Placeholder  go to center of placeholder
             if (((userAnswerBoxPlaceholder.x - userAnswerBoxPlaceholder.width/2) < alternateAnswer1.x ) and 
@@ -379,8 +374,6 @@ local function TouchListenerAlternateAnswer1(touch)
 
                 alternateAnswer1.x = userAnswerBoxPlaceholder.x
                 alternateAnswer1.y = userAnswerBoxPlaceholder.y
-
-                userAnswer = alternateAnswer1
 
                 -- call the function to check if the user's input is correct or not
                 IncorrectUserInput()
@@ -410,6 +403,7 @@ local function TouchListenerAlternateAnswer2(touch)
 
         elseif (touch.phase == "ended") then
             alternateAnswer2AlreadyTouched = false
+            print  ("***Executing TouchListenerAlternateAnswer2")
 
             -- if the box is in the userAnswerBox Placeholder  go to center of placeholder
             if (((userAnswerBoxPlaceholder.x - userAnswerBoxPlaceholder.width/2) < alternateAnswer2.x ) and 
@@ -418,9 +412,7 @@ local function TouchListenerAlternateAnswer2(touch)
                 ((userAnswerBoxPlaceholder.y + userAnswerBoxPlaceholder.height/2) > alternateAnswer2.y ) ) then
 
                 alternateAnswer2.x = userAnswerBoxPlaceholder.x
-                alternateAnswer2.y = userAnswerBoxPlaceholder.y
-
-                userAnswer = alternateAnswer2
+                alternateAnswer2.y = userAnswerBoxPlaceholder.y         
 
                 -- call the function to check if the user's input is correct or not
                 IncorrectUserInput()
@@ -437,15 +429,15 @@ end
 -- Function that Adds Listeners to each answer box
 local function AddTouchEventListeners()
     correctAnswer:addEventListener("touch", TouchListenerCorrectAnswer)
-    alternateAnswer1:addEventListener("touch", TouchListenerAlternateAnswer1)
-    alternateAnswer2:addEventListener("touch", TouchListenerAlternateAnswer2)
+    --alternateAnswer1:addEventListener("touch", TouchListenerAlternateAnswer1)
+    --alternateAnswer2:addEventListener("touch", TouchListenerAlternateAnswer2)
 end 
 
 -- Function that Removes Listeners to each answer box
 local function RemoveTouchEventListeners()
     correctAnswer:addEventListener("touch", TouchListenerCorrectAnswer)
-    alternateAnswer1:addEventListener("touch", TouchListenerAlternateAnswer1)
-    alternateAnswer2:addEventListener("touch", TouchListenerAlternateAnswer2)
+    --alternateAnswer1:addEventListener("touch", TouchListenerAlternateAnswer1)
+    --alternateAnswer2:addEventListener("touch", TouchListenerAlternateAnswer2)
 end 
 -----------------------------------------------------------------------------------------
 -- GLOBAL SCENE FUNCTIONS
@@ -511,23 +503,26 @@ function scene:create( event )
 
 
     -- the black box where the user will drag the answer
-    userAnswerBoxPlaceholder = display.newImageRect("Images/answerBox@2x.png",  130, 130, 0, 0)
+    userAnswerBoxPlaceholder = display.newImageRect("Images/answerBox@2x.png",  300, 130)
     userAnswerBoxPlaceholder.x = 512
     userAnswerBoxPlaceholder.y = 350
 
-    correctText = display.newText( "Correct!", 700, 350, nil, 30 )
+    correctText = display.newText( "Correct!", 750, 350, nil, 30 )
     correctText:setTextColor(0/255,240/255,0/255) -- sets text to green
     correctText.isVisible = false
 
-    incorrectText = display.newText( "Wrong!", 700, 350, nil, 30 )
+    incorrectText = display.newText( "Wrong!", 750, 350, nil, 30 )
     incorrectText:setTextColor(255/255,0/255,0/255) -- sets text to red
     incorrectText.isVisible = false
 
     -- X4 = the x of displayAnswerText
-    displayAnswerText = display.newText( "correct answer:", 300, Y1, nil, 30 )
+    displayAnswerText = display.newText( "Correct Answer:", 290, Y1, nil, 30 )
     displayAnswerText:setTextColor(9/255,200/255,0/255) -- sets text to green
     displayAnswerText.isVisible = false
 
+    -- displays the amount of points 
+    pointsText = display.newText( "Points = " .. points, 900, 100, nil, 30 )
+    pointsText:setTextColor(102/255,0/255,204/255)
     -- Associating button widgets with this scene
     sceneGroup:insert( bkg )
     sceneGroup:insert( syringe )
@@ -542,6 +537,7 @@ function scene:create( event )
     sceneGroup:insert( correctText )
     sceneGroup:insert( incorrectText )
     sceneGroup:insert( displayAnswerText )
+    sceneGroup:insert( pointsText )
 end -- function scene:create( event )
 
 --------------------------------------------------------------------------------------------
@@ -563,19 +559,11 @@ function scene:show( event )
 
     -----------------------------------------------------------------------------------------
 
-    elseif ( phase == "did" ) then
-        lives = 3
-        points = 0
+    elseif ( phase == "did" ) then  
         audio.pause(bkgMusicChannel) 
-        RestartLevel4()
         resetScore()
+        RestartLevel4()        
         AddTouchEventListeners()
-
-        if (heart1.isVisible == false ) then
-            heart1.isVisible = true
-            heart2.isVisible = true
-            heart3.isVisible = true
-        end
      end
 end --function scene:show( event )
 
@@ -612,8 +600,7 @@ function scene:destroy( event )
     -- Creating a group that associates objects with the scene
     local sceneGroup = self.view
 
-    -----------------------------------------------------------------------------------------
-
+    ----------------------------------------------------------------------------------------
 
     -- Called prior to the removal of scene's view ("sceneGroup").
     -- Insert code here to clean up the scene.
