@@ -44,6 +44,7 @@ local heart2
 local heart3
 
 local syringe
+local blood
 
 local question
 
@@ -92,6 +93,9 @@ local correctSound
 -- Boolean variable that states if user clicked the answer or not
 local alreadyClickedAnswer = false
 
+local bloodtimer1
+local bloodtimer2
+local bloodtimer3
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- LOCAl SOUNDS -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -107,9 +111,12 @@ local function resetScore()
     print("reset Score, points = " .. points)
     pointsText.text = "Points = " .. points
     lives = 3
-    heart1.isVisible = true
-    heart2.isVisible = true
-    heart3.isVisible = true
+    --heart1.isVisible = true
+    heart1.y = 225
+    --heart2.isVisible = true
+    heart2.y = 225
+    --heart3.isVisible = true
+    heart3.y = 225
 end
 
 -- The function that will go to the main menu 
@@ -247,16 +254,31 @@ local function PositionAnswers()
     end
 end
 
+local function bloodheight( )
+    blood.height = blood.height - 32.5
+end
+
+local function bloodheight2( )
+    blood.height = blood.height - 32.5
+end
+
+local function bloodheight3( )
+    blood.height = blood.height - 32.5
+end
+
 local function heart1Transition()
-    heart1.y = heart1.y + 1 
+    heart1.isVisible = true
+    heart1.y = heart1.y + 5.5 
 end
 
 local function heart2Transition()
-    heart2.y = heart2.y + 1 
+    heart2.isVisible = true
+    heart2.y = heart2.y + 5.5
 end
 
 local function heart3Transition()
-    heart3.y = heart3.y + 1 
+    heart3.isVisible = true
+    heart3.y = heart3.y + 5.5
 end
 -- Function to Restart Level 1
 local function RestartLevel4()
@@ -288,16 +310,17 @@ local function IncorrectUserInput()
     displayAnswerText.isVisible = true
     print ("IncorrectUserInput: points = " .. points)
     print ("IncorrectUserInput: lives = " .. lives)
-
     if (lives == 2) then 
-        heart1.isVisible = false
+        bloodtimer1 = timer.performWithDelay(0.001, heart1Transition, 750)
         timer.performWithDelay(1500, RestartLevel4) 
     elseif (lives == 1 ) then 
-        heart2.isVisible = false
+        bloodheight2()
+        bloodheight2 = timer.performWithDelay(0.001, heart2Transition, 750)
         timer.performWithDelay(1500, RestartLevel4) 
     elseif(lives == 0) then
-        heart3.isVisible = false
-        gotoYouLose()
+        bloodheight3()
+        bloodtimer3 = timer.performWithDelay(0.001, heart3Transition, 750)
+        timer.performWithDelay(1500, gotoYouLose)
     end
 end
 
@@ -429,15 +452,15 @@ end
 -- Function that Adds Listeners to each answer box
 local function AddTouchEventListeners()
     correctAnswer:addEventListener("touch", TouchListenerCorrectAnswer)
-    --alternateAnswer1:addEventListener("touch", TouchListenerAlternateAnswer1)
-    --alternateAnswer2:addEventListener("touch", TouchListenerAlternateAnswer2)
+    alternateAnswer1:addEventListener("touch", TouchListenerAlternateAnswer1)
+    alternateAnswer2:addEventListener("touch", TouchListenerAlternateAnswer2)
 end 
 
 -- Function that Removes Listeners to each answer box
 local function RemoveTouchEventListeners()
     correctAnswer:addEventListener("touch", TouchListenerCorrectAnswer)
-    --alternateAnswer1:addEventListener("touch", TouchListenerAlternateAnswer1)
-    --alternateAnswer2:addEventListener("touch", TouchListenerAlternateAnswer2)
+    alternateAnswer1:addEventListener("touch", TouchListenerAlternateAnswer1)
+    alternateAnswer2:addEventListener("touch", TouchListenerAlternateAnswer2)
 end 
 -----------------------------------------------------------------------------------------
 -- GLOBAL SCENE FUNCTIONS
@@ -465,16 +488,19 @@ function scene:create( event )
     syringe.y = 100
 
     heart3 = display.newImageRect("Images/heart@2x.png", 50, 50)
-    heart3.x = 165
+    heart3.x = 125
     heart3.y = 225
+    heart3.isVisible = false
 
     heart2 = display.newImageRect("Images/heart@2x.png", 50, 50)
-    heart2.x = 85
+    heart2.x = 125
     heart2.y = 225
+    heart2.isVisible = false
 
     heart1 = display.newImageRect("Images/heart@2x.png", 50, 50)
     heart1.x = 125
     heart1.y = 225
+    heart1.isVisible = false
 
     --the text that displays the question
     question = display.newText("" , 0, 0, nil, 30)
@@ -523,6 +549,13 @@ function scene:create( event )
     -- displays the amount of points 
     pointsText = display.newText( "Points = " .. points, 900, 100, nil, 30 )
     pointsText:setTextColor(102/255,0/255,204/255)
+
+    blood = display.newRect(126.5, 97.5, 62, 97.5)
+    blood:setFillColor(255/255,0/255,0/255)
+    blood.anchorY = 1
+
+
+
     -- Associating button widgets with this scene
     sceneGroup:insert( bkg )
     sceneGroup:insert( syringe )
@@ -538,6 +571,7 @@ function scene:create( event )
     sceneGroup:insert( incorrectText )
     sceneGroup:insert( displayAnswerText )
     sceneGroup:insert( pointsText )
+    sceneGroup:insert( blood )
 end -- function scene:create( event )
 
 --------------------------------------------------------------------------------------------

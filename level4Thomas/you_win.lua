@@ -35,6 +35,7 @@ local MainMenuButton
 
 
 local function gotoMainMenu()
+    composer.removeScene( "level4_screen" )
     composer.gotoScene( "level4_screen")
 end
 -----------------------------------------------------------------------------------------
